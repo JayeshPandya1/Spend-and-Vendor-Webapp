@@ -261,6 +261,20 @@
             opacity: 1;
         }
 
+        @keyframes pulse {
+            0% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.4;
+            }
+        }
+
         /* Login Screen */
         .login-container {
             min-height: 100vh;
@@ -453,6 +467,7 @@
             const [isLoaded, setIsLoaded] = useState(false);
             const [auth, setAuth] = useState({ isAuthenticated: false, user: null });
             const [showSettings, setShowSettings] = useState(false);
+            const [syncing, setSyncing] = useState(false);
 
             useEffect(() => {
                 const sessionAuth = sessionStorage.getItem('sv-auth');
@@ -461,26 +476,57 @@
 
             useEffect(() => {
                 if (auth.isAuthenticated) {
-                    if (auth.user === 'demo') {
-                        setData(DEMO_DATA);
+                    const loadData = async () => {
+                        if (auth.user === 'demo') {
+                            setData(DEMO_DATA);
+                            setIsLoaded(true);
+                            return;
+                        }
+
+                        const s = getSettings();
+                        let initialData = null;
+
+                        // Try local first
+                        const saved = window.storage ? window.storage.get(STORAGE_KEY) : localStorage.getItem(STORAGE_KEY);
+                        if (saved) {
+                            try {
+                                initialData = JSON.parse(saved);
+                            } catch (e) { console.error("Load failed", e); }
+                        }
+
+                        // Then try cloud if configured (Auto-Pull)
+                        if (s.cloudUrl) {
+                            setSyncing(true);
+                            const cloudData = await fetchCloud(s.cloudUrl);
+                            if (cloudData && typeof cloudData === 'object' && Object.keys(cloudData).length > 0) {
+                                initialData = cloudData;
+                                // Update local with cloud data
+                                const str = JSON.stringify(cloudData);
+                                if (window.storage) window.storage.set(STORAGE_KEY, str);
+                                else localStorage.setItem(STORAGE_KEY, str);
+                            }
+                            setSyncing(false);
+                        }
+
+                        if (initialData) setData(initialData);
                         setIsLoaded(true);
-                        return;
-                    }
-                    const saved = window.storage ? window.storage.get(STORAGE_KEY) : localStorage.getItem(STORAGE_KEY);
-                    if (saved) {
-                        try {
-                            setData(JSON.parse(saved));
-                        } catch (e) { console.error("Load failed", e); }
-                    }
-                    setIsLoaded(true);
+                    };
+                    loadData();
                 }
             }, [auth]);
 
             useEffect(() => {
                 if (isLoaded && auth.isAuthenticated && auth.user === 'admin') {
                     const str = JSON.stringify(data);
+                    // Save Local
                     if (window.storage) window.storage.set(STORAGE_KEY, str);
                     else localStorage.setItem(STORAGE_KEY, str);
+
+                    // Save Cloud (Auto-Push)
+                    const s = getSettings();
+                    if (s.cloudUrl) {
+                        saveCloud(s.cloudUrl, data);
+                    }
                 }
             }, [data, isLoaded, auth]);
 
@@ -546,19 +592,14 @@
                     return;
                 }
 
-                const action = confirm("CLOUD SYNC:\nOK = PULL from Cloud (Overwrite Local)\nCancel = PUSH to Cloud (Save Local)");
-                if (action) {
-                    // Pull
-                    const cloudData = await fetchCloud(s.cloudUrl);
-                    if (cloudData) {
-                        setData(cloudData);
-                        showToast("Data PULLED from Cloud!");
-                    }
-                } else {
-                    // Push
-                    const success = await saveCloud(s.cloudUrl, data);
-                    if (success) showToast("Data PUSHED to Cloud!");
+                if (syncing) return;
+                setSyncing(true);
+                const cloudData = await fetchCloud(s.cloudUrl);
+                if (cloudData && typeof cloudData === 'object' && Object.keys(cloudData).length > 0) {
+                    setData(cloudData);
+                    showToast("Synced from Cloud!");
                 }
+                setSyncing(false);
             };
 
             if (!auth.isAuthenticated) return <LoginView onLogin={handleLogin} />;
@@ -570,10 +611,12 @@
                         <h1 style={{ margin: 0 }}>Spend & Vendor Management</h1>
                         {auth.user === 'demo' && <p style={{ margin: '4px 0 0', fontSize: '0.85rem', opacity: 0.9 }}><b>(DEMO MODE)</b></p>}
 
+                        {syncing && <div style={{ position: 'absolute', left: 15, top: '50%', transform: 'translateY(-50%)', fontSize: '0.7rem', color: 'rgba(255,255,255,0.7)', animation: 'pulse 1.5s infinite' }}>SYNCING...</div>}
+
                         <div style={{ position: 'absolute', right: 15, top: '50%', transform: 'translateY(-50%)', display: 'flex', gap: '8px' }}>
                             {auth.user === 'admin' && (
                                 <>
-                                    <button onClick={handleSync} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white', cursor: 'pointer' }}>
+                                    <button onClick={handleSync} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white', cursor: 'pointer', opacity: syncing ? 0.5 : 1 }}>
                                         <Icons.Cloud />
                                     </button>
                                     <button onClick={() => setShowSettings(true)} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '10px', padding: '8px', color: 'white', cursor: 'pointer' }}>
