@@ -381,12 +381,14 @@
             const defaults = {
                 username: 'Jayesh',
                 password: 'Jayesh@1234',
-                cloudUrl: ''
+                cloudUrl: 'https://script.google.com/macros/s/AKfycbwYH41J4fK7l9aAEapWm7aSxATfQgb8R-drIfxpzGLtKKqvC5oYHtoQm-9UnrznKbvK/exec'
             };
             const s = localStorage.getItem(SETTINGS_KEY);
             if (!s) return defaults;
             try {
                 const saved = JSON.parse(s);
+                // Use default cloudUrl if saved one is empty
+                if (!saved.cloudUrl) saved.cloudUrl = defaults.cloudUrl;
                 return { ...defaults, ...saved };
             } catch (e) {
                 return defaults;
@@ -1134,12 +1136,12 @@
                                 <label>Google Apps Script URL (Cloud)</label>
                                 <input
                                     type="url"
-                                    placeholder="https://script.google.com/macros/s/.../exec"
+                                    placeholder="Enter Cloud URL"
                                     value={settings.cloudUrl}
                                     onChange={e => setSettings({ ...settings, cloudUrl: e.target.value })}
                                 />
-                                <p style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '4px' }}>
-                                    Paste your Google Apps Script Web App URL here for cloud sync.
+                                <p style={{ fontSize: '0.7rem', color: 'var(--text-light)', marginTop: '4px' }}>
+                                    The default Pandya App URL is already hardcoded. Update only if you want to use a different sheet.
                                 </p>
                             </div>
                             <div style={{ display: 'flex', gap: '8px', marginTop: '20px' }}>
