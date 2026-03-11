@@ -292,6 +292,7 @@
             align-items: center;
             cursor: pointer;
             font-size: 1rem;
+            position: relative;
         }
 
         .select-options {
@@ -333,6 +334,22 @@
             font-weight: 700;
             background: var(--light-blue);
             cursor: pointer;
+        }
+
+        .shuffle-btn {
+            border: none;
+            background: none;
+            color: var(--primary-blue);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .shuffle-btn:hover {
+            opacity: 1;
         }
 
         /* Login Screen */
@@ -424,7 +441,9 @@
             LogOut: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg>,
             Cloud: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19a5.5 5.5 0 0 0 2.5-10.5 8.5 8.5 0 1 0-14 10.5h11.5Z" /></svg>,
             Settings: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1-1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>,
-            Trash: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+            Trash: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>,
+            Edit: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>,
+            Shuffle: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" /><path d="m18 2 4 4-4 4" /><path d="M2 6h1.9c1.2 0 2.3.6 3 1.5l3.8 5" /><path d="m11 15.5 1.5 2c.7 1 1.8 1.5 3 1.5H22" /><path d="m18 22 4-4-4-4" /></svg>
         };
 
         const formatDate = (dateStr) => {
@@ -432,6 +451,8 @@
             const [y, m, d] = dateStr.split('-');
             return `${d}/${m}/${y}`;
         };
+
+        const getToday = () => new Date().toISOString().split('T')[0];
 
         const showToast = (msg) => {
             const t = document.getElementById('toast');
@@ -441,6 +462,14 @@
         };
 
         const generateId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
+
+        const ensureDataSchema = (raw, fallbackCategories) => ({
+            vendors: raw?.vendors || [],
+            spends: raw?.spends || [],
+            bills: raw?.bills || [],
+            payments: raw?.payments || [],
+            categories: raw?.categories || fallbackCategories
+        });
 
         const SETTINGS_KEY = 'spend-vendor-settings';
 
@@ -561,11 +590,7 @@
                         const saved = window.storage ? window.storage.get(STORAGE_KEY) : localStorage.getItem(STORAGE_KEY);
                         if (saved) {
                             try {
-                                const parsed = JSON.parse(saved);
-                                initialData = {
-                                    ...parsed,
-                                    categories: parsed.categories || data.categories // Safety check for categories
-                                };
+                                initialData = ensureDataSchema(JSON.parse(saved), data.categories);
                             } catch (e) { console.error("Load failed", e); }
                         }
 
@@ -574,10 +599,7 @@
                             setSyncing(true);
                             const cloudData = await fetchCloud(s.cloudUrl);
                             if (cloudData && typeof cloudData === 'object' && Object.keys(cloudData).length > 0) {
-                                initialData = {
-                                    ...cloudData,
-                                    categories: cloudData.categories || (initialData?.categories || data.categories)
-                                };
+                                initialData = ensureDataSchema(cloudData, initialData?.categories || data.categories);
                                 // Update local with cloud data
                                 const str = JSON.stringify(initialData);
                                 if (window.storage) window.storage.set(STORAGE_KEY, str);
@@ -633,6 +655,20 @@
                 }
             };
 
+            const reorderCategoriesByUsage = () => {
+                const counts = {};
+                data.categories.forEach(c => counts[c] = 0);
+
+                // Count across everything
+                data.spends.forEach(s => counts[s.category] = (counts[s.category] || 0) + 1);
+                data.bills.forEach(b => counts[b.category] = (counts[b.category] || 0) + 1);
+                data.payments.forEach(p => counts[p.category] = (counts[p.category] || 0) + 1);
+
+                const sorted = [...data.categories].sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
+                setData(prev => ({ ...prev, categories: sorted }));
+                showToast("Categories sorted by usage");
+            };
+
             const addSpend = (vendorId, amount, category, date) => {
                 addCategory(category);
                 const newSpend = { id: generateId(), vendorId, amount: Number(amount), category, date };
@@ -652,6 +688,24 @@
                 const newPayment = { id: generateId(), vendorId, amount: Number(amount), date, category, note };
                 setData(prev => ({ ...prev, payments: [newPayment, ...prev.payments] }));
                 showToast("Payment recorded!");
+            };
+
+            const updateBill = (id, category, date, items, total) => {
+                addCategory(category);
+                setData(prev => ({
+                    ...prev,
+                    bills: prev.bills.map(b => b.id === id ? { ...b, category, date, items, total: Number(total) } : b)
+                }));
+                showToast("Bill updated!");
+            };
+
+            const updatePayment = (id, amount, date, category, note) => {
+                addCategory(category);
+                setData(prev => ({
+                    ...prev,
+                    payments: prev.payments.map(p => p.id === id ? { ...p, amount: Number(amount), date, category, note } : p)
+                }));
+                showToast("Payment updated!");
             };
 
             const deleteSpend = (id) => {
@@ -699,7 +753,7 @@
                 setAuth({ isAuthenticated: false, user: null });
                 sessionStorage.removeItem('sv-auth');
                 setIsLoaded(false);
-                setData({ vendors: [], spends: [], bills: [], payments: [] });
+                setData({ vendors: [], spends: [], bills: [], payments: [], categories: ['General', 'Hardware', 'Material'] });
                 showToast("Logged out");
             };
 
@@ -715,11 +769,7 @@
                 setSyncing(true);
                 const cloudData = await fetchCloud(s.cloudUrl);
                 if (cloudData && typeof cloudData === 'object' && Object.keys(cloudData).length > 0) {
-                    setData(prev => ({
-                        ...prev,
-                        ...cloudData,
-                        categories: cloudData.categories || prev.categories
-                    }));
+                    setData(prev => ensureDataSchema({ ...prev, ...cloudData }, prev.categories));
                     showToast("Synced from Cloud!");
                 }
                 setSyncing(false);
@@ -765,15 +815,18 @@
                                 selectedVendorId={selectedVendorId}
                                 setSelectedVendorId={setSelectedVendorId}
                                 addPayment={addPayment}
+                                updatePayment={updatePayment}
                                 deleteBill={deleteBill}
                                 deletePayment={deletePayment}
                                 deleteSpend={deleteSpend}
+                                updateBill={updateBill}
                                 addCategory={addCategory}
                                 deleteCategory={deleteCategory}
+                                reorderCategories={reorderCategoriesByUsage}
                             />
                         )}
-                        {activeTab === 'spend' && <SpendView data={data} addSpend={addSpend} addVendor={addVendor} deleteSpend={deleteSpend} addCategory={addCategory} deleteCategory={deleteCategory} />}
-                        {activeTab === 'vendor' && <VendorMasterView data={data} addVendor={addVendor} addBill={addBill} addPayment={addPayment} deleteBill={deleteBill} deletePayment={deletePayment} deleteSpend={deleteSpend} addCategory={addCategory} deleteCategory={deleteCategory} />}
+                        {activeTab === 'spend' && <SpendView data={data} addSpend={addSpend} addVendor={addVendor} deleteSpend={deleteSpend} addCategory={addCategory} deleteCategory={deleteCategory} reorderCategories={reorderCategoriesByUsage} />}
+                        {activeTab === 'vendor' && <VendorMasterView data={data} addVendor={addVendor} addBill={addBill} updateBill={updateBill} addPayment={addPayment} updatePayment={updatePayment} deleteBill={deleteBill} deletePayment={deletePayment} deleteSpend={deleteSpend} addCategory={addCategory} deleteCategory={deleteCategory} reorderCategories={reorderCategoriesByUsage} />}
                     </main>
 
                     <nav className="tab-bar">
@@ -796,13 +849,13 @@
         };
 
         // Sub-components will go here (implemented in next steps)
-        const DashboardView = ({ data, toggle, setToggle, selectedVendorId, setSelectedVendorId, addPayment, deleteBill, deletePayment, deleteSpend, addCategory, deleteCategory }) => (
+        const DashboardView = ({ data, toggle, setToggle, selectedVendorId, setSelectedVendorId, addPayment, updatePayment, deleteBill, deletePayment, deleteSpend, updateBill, addCategory, deleteCategory, reorderCategories }) => (
             <div>
                 <div className="toggle-group">
                     <button className={`toggle-btn ${toggle === 'spend' ? 'active' : ''}`} onClick={() => setToggle('spend')}>Spend</button>
                     <button className={`toggle-btn ${toggle === 'vendor' ? 'active' : ''}`} onClick={() => setToggle('vendor')}>Vendor</button>
                 </div>
-                {toggle === 'spend' ? <SpendDashboard data={data} deleteSpend={deleteSpend} /> : <VendorDashboard data={data} selectedId={selectedVendorId} setSelectedId={setSelectedVendorId} addPayment={addPayment} deleteBill={deleteBill} deletePayment={deletePayment} deleteSpend={deleteSpend} addCategory={addCategory} deleteCategory={deleteCategory} />}
+                {toggle === 'spend' ? <SpendDashboard data={data} deleteSpend={deleteSpend} /> : <VendorDashboard data={data} selectedId={selectedVendorId} setSelectedId={setSelectedVendorId} addPayment={addPayment} updatePayment={updatePayment} deleteBill={deleteBill} deletePayment={deletePayment} deleteSpend={deleteSpend} updateBill={updateBill} addCategory={addCategory} deleteCategory={deleteCategory} reorderCategories={reorderCategories} />}
             </div>
         );
 
@@ -859,7 +912,7 @@
             );
         };
 
-        const VendorDashboard = ({ data, selectedId, setSelectedId, addPayment, deleteBill, deletePayment, deleteSpend, addCategory, deleteCategory }) => {
+        const VendorDashboard = ({ data, selectedId, setSelectedId, addPayment, updatePayment, deleteBill, deletePayment, deleteSpend, updateBill, addCategory, deleteCategory, reorderCategories }) => {
             const [showPayForm, setShowPayForm] = useState(false);
             const vendor = data.vendors.find(v => v.id === selectedId);
 
@@ -970,7 +1023,7 @@
                                         </div>
                                         <div className="form-group">
                                             <label>Category</label>
-                                            <CategorySelect name="category" categories={data.categories} onAddCategory={addCategory} onDeleteCategory={deleteCategory} />
+                                            <CategorySelect name="category" categories={data.categories} onAddCategory={addCategory} onDeleteCategory={deleteCategory} onShuffle={reorderCategories} />
                                         </div>
                                         <div className="form-group">
                                             <label>Date</label>
@@ -993,7 +1046,7 @@
             );
         };
 
-        const SpendView = ({ data, addSpend, addVendor, deleteSpend, addCategory, deleteCategory }) => {
+        const SpendView = ({ data, addSpend, addVendor, deleteSpend, addCategory, deleteCategory, reorderCategories }) => {
             const [showAddVendor, setShowAddVendor] = useState(false);
             const [filter, setFilter] = useState('all');
 
@@ -1033,7 +1086,7 @@
                             </div>
                             <div className="form-group">
                                 <label>Category</label>
-                                <CategorySelect name="category" categories={data.categories} onAddCategory={addCategory} onDeleteCategory={deleteCategory} />
+                                <CategorySelect name="category" categories={data.categories} onAddCategory={addCategory} onDeleteCategory={deleteCategory} onShuffle={reorderCategories} />
                             </div>
                             <div className="form-group">
                                 <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required />
@@ -1073,7 +1126,7 @@
             );
         };
 
-        const VendorMasterView = ({ data, addVendor, addBill, addPayment, deleteBill, deletePayment, deleteSpend, addCategory, deleteCategory }) => {
+        const VendorMasterView = ({ data, addVendor, addBill, updateBill, addPayment, updatePayment, deleteBill, deletePayment, deleteSpend, addCategory, deleteCategory, reorderCategories }) => {
             const [search, setSearch] = useState('');
             const [showAdd, setShowAdd] = useState(false);
             const [viewVendorId, setViewVendorId] = useState(null);
@@ -1082,7 +1135,7 @@
 
             if (viewVendorId) {
                 const vendor = data.vendors.find(v => v.id === viewVendorId);
-                return <VendorDetailView vendor={vendor} data={data} addBill={addBill} addPayment={addPayment} deleteBill={deleteBill} deletePayment={deletePayment} deleteSpend={deleteSpend} addCategory={addCategory} deleteCategory={deleteCategory} back={() => setViewVendorId(null)} />;
+                return <VendorDetailView vendor={vendor} data={data} addBill={addBill} updateBill={updateBill} addPayment={addPayment} updatePayment={updatePayment} deleteBill={deleteBill} deletePayment={deletePayment} deleteSpend={deleteSpend} addCategory={addCategory} deleteCategory={deleteCategory} reorderCategories={reorderCategories} back={() => setViewVendorId(null)} />;
             }
 
             return (
@@ -1115,9 +1168,11 @@
             );
         };
 
-        const VendorDetailView = ({ vendor, data, addBill, addPayment, deleteBill, deletePayment, deleteSpend, addCategory, deleteCategory, back }) => {
+        const VendorDetailView = ({ vendor, data, addBill, updateBill, addPayment, updatePayment, deleteBill, deletePayment, deleteSpend, addCategory, deleteCategory, reorderCategories, back }) => {
             const [showBill, setShowBill] = useState(false);
             const [showPayForm, setShowPayForm] = useState(false);
+            const [editingBill, setEditingBill] = useState(null);
+            const [editingPayment, setEditingPayment] = useState(null);
 
             const ledger = useMemo(() => {
                 if (!vendor) return [];
@@ -1150,37 +1205,37 @@
 
                     <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
                         <button className="btn btn-primary" onClick={() => setShowBill(true)}>+ Add Bill</button>
-                        <button className="btn" style={{ background: 'var(--light-blue)', color: 'var(--primary-blue)' }} onClick={() => setShowPayForm(true)}>+ Add Payment</button>
+                        <button className="btn" style={{ background: 'var(--light-blue)', color: 'var(--primary-blue)' }} onClick={() => { setShowPayForm(true); setEditingPayment(null); }}>+ Add Payment</button>
                     </div>
 
                     {showPayForm && (
                         <div className="card" style={{ marginBottom: '16px' }}>
-                            <h4 style={{ margin: '0 0 12px' }}>Record Payment</h4>
-                            <form onSubmit={(e) => {
+                            <h4>{editingPayment ? 'Edit Payment' : 'Record Payment'}</h4>
+                            <form onSubmit={e => {
                                 e.preventDefault();
-                                const form = e.target;
-                                addPayment(vendor.id, form.amount.value, form.date.value, form.category.value, form.note.value);
-                                setShowPayForm(false);
+                                if (editingPayment) {
+                                    updatePayment(editingPayment.id, e.target.amount.value, e.target.date.value, 'Payment', e.target.note.value);
+                                    setEditingPayment(null);
+                                } else {
+                                    addPayment(vendor.id, e.target.amount.value, e.target.date.value, 'Payment', e.target.note.value);
+                                    setShowPayForm(false);
+                                }
                             }}>
                                 <div className="form-group">
                                     <label>Amount (₹)</label>
-                                    <input name="amount" type="number" placeholder="0.00" required />
-                                </div>
-                                <div className="form-group">
-                                    <label>Category</label>
-                                    <CategorySelect name="category" categories={data.categories} onAddCategory={addCategory} onDeleteCategory={deleteCategory} />
+                                    <input name="amount" type="number" defaultValue={editingPayment ? editingPayment.amount : ''} required />
                                 </div>
                                 <div className="form-group">
                                     <label>Date</label>
-                                    <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required />
+                                    <input name="date" type="date" defaultValue={editingPayment ? editingPayment.date : new Date().toISOString().split('T')[0]} required />
                                 </div>
                                 <div className="form-group">
                                     <label>Note</label>
-                                    <input name="note" placeholder="e.g. GPay, Cash" />
+                                    <input name="note" placeholder="e.g. GPay, Cash" defaultValue={editingPayment ? editingPayment.note : ''} />
                                 </div>
                                 <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button type="submit" className="btn btn-primary">Save Payment</button>
-                                    <button type="button" className="btn" style={{ background: '#eee' }} onClick={() => setShowPayForm(false)}>Cancel</button>
+                                    <button type="submit" className="btn btn-primary">{editingPayment ? 'Update Payment' : 'Save Payment'}</button>
+                                    <button type="button" className="btn" style={{ background: '#eee' }} onClick={() => { setShowPayForm(false); setEditingPayment(null); }}>Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -1210,6 +1265,15 @@
                                                 <button
                                                     style={{ border: 'none', background: 'none', color: 'var(--text-light)', cursor: 'pointer', padding: '2px', marginLeft: '4px' }}
                                                     onClick={() => {
+                                                        if (item.type === 'bill') { setEditingBill(item); setShowBill(false); }
+                                                        else if (item.type === 'payment') { setEditingPayment(item); setShowPayForm(false); }
+                                                    }}
+                                                >
+                                                    <Icons.Edit />
+                                                </button>
+                                                <button
+                                                    style={{ border: 'none', background: 'none', color: 'var(--text-light)', cursor: 'pointer', padding: '2px', marginLeft: '4px' }}
+                                                    onClick={() => {
                                                         if (item.type === 'bill') deleteBill(item.id);
                                                         else if (item.type === 'spend') deleteSpend(item.id);
                                                         else deletePayment(item.id);
@@ -1225,7 +1289,8 @@
                         </table>
                     </div>
 
-                    {showBill && <AddBillModal vendorId={vendor.id} vendorName={vendor.name} addBill={addBill} categories={data.categories} addCategory={addCategory} deleteCategory={deleteCategory} close={() => setShowBill(false)} />}
+                    {showBill && <BillModal vendorId={vendor.id} vendorName={vendor.name} addBill={addBill} categories={data.categories} addCategory={addCategory} deleteCategory={deleteCategory} onShuffle={reorderCategories} close={() => setShowBill(false)} />}
+                    {editingBill && <BillModal vendorId={vendor.id} vendorName={vendor.name} bill={editingBill} updateBill={updateBill} categories={data.categories} addCategory={addCategory} deleteCategory={deleteCategory} onShuffle={reorderCategories} close={() => setEditingBill(null)} />}
                 </div>
             );
         };
@@ -1262,8 +1327,12 @@
             );
         };
 
-        const AddBillModal = ({ vendorId, vendorName, addBill, categories, addCategory, deleteCategory, close }) => {
-            const [items, setItems] = useState([{ id: 1, name: '', qty: 0, rate: 0, amount: 0 }]);
+        const BillModal = ({ vendorId, vendorName, addBill, updateBill, bill, categories, addCategory, deleteCategory, onShuffle, close }) => {
+            const [items, setItems] = useState(bill ? bill.items : [{ id: 1, name: '', qty: 0, rate: 0, amount: 0 }]);
+            const [date, setDate] = useState(bill ? bill.date : getToday());
+            const [category, setCategory] = useState(bill ? bill.category : '');
+
+            const isEdit = !!bill;
 
             const updateTotal = (idx, field, val) => {
                 const newItems = [...items];
@@ -1279,21 +1348,27 @@
             return (
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 3000, display: 'flex', alignItems: 'flex-start', padding: '16px', overflowY: 'auto' }}>
                     <div className="card" style={{ width: '100%', maxWidth: '450px', margin: '20px auto' }}>
-                        <h3>New Bill</h3>
+                        <h3>{isEdit ? 'Edit Bill' : 'New Bill'}</h3>
                         <div className="form-group" style={{ background: 'var(--light-blue)', padding: '10px', borderRadius: '8px', marginBottom: '16px' }}>
                             <label style={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>Vendor</label>
                             <div style={{ fontWeight: 700, color: 'var(--primary-blue)' }}>{vendorName}</div>
                         </div>
                         <form onSubmit={e => {
                             e.preventDefault();
-                            addBill(vendorId, e.target.category.value, e.target.date.value, items, grandTotal);
+                            if (isEdit) {
+                                updateBill(bill.id, category, date, items, grandTotal);
+                            } else {
+                                addBill(vendorId, category, date, items, grandTotal);
+                            }
                             close();
                         }}>
                             <div className="form-group">
-                                <input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required />
+                                <label>Date</label>
+                                <input name="date" type="date" value={date} onChange={e => setDate(e.target.value)} required />
                             </div>
                             <div className="form-group">
-                                <CategorySelect name="category" categories={categories} onAddCategory={addCategory} onDeleteCategory={deleteCategory} />
+                                <label>Category</label>
+                                <CategorySelect name="category" value={category} onChange={e => setCategory(e.target.value)} categories={categories} onAddCategory={addCategory} onDeleteCategory={deleteCategory} onShuffle={onShuffle} />
                             </div>
 
                             <h4>Items</h4>
@@ -1310,7 +1385,7 @@
                             <div style={{ fontSize: '1.2rem', fontWeight: 800, textAlign: 'right', marginBottom: '16px' }}>Total: ₹{grandTotal}</div>
 
                             <div style={{ display: 'flex', gap: '8px' }}>
-                                <button type="submit" className="btn btn-primary">Save Bill</button>
+                                <button type="submit" className="btn btn-primary">{isEdit ? 'Update Bill' : 'Save Bill'}</button>
                                 <button type="button" className="btn" style={{ background: '#eee' }} onClick={close}>Cancel</button>
                             </div>
                         </form>
@@ -1420,7 +1495,7 @@
             );
         };
 
-        const CategorySelect = ({ value, onChange, categories = [], name, onAddCategory, onDeleteCategory }) => {
+        const CategorySelect = ({ value, onChange, categories = [], name, onAddCategory, onDeleteCategory, onShuffle }) => {
             const [isOpen, setIsOpen] = useState(false);
             const [localValue, setLocalValue] = useState(value || '');
 
@@ -1458,7 +1533,18 @@
                 <div className="custom-select" ref={selectRef}>
                     <div className="select-trigger" onClick={() => setIsOpen(!isOpen)}>
                         <span style={{ color: val ? 'var(--text-dark)' : 'var(--text-light)' }}>{displayValue}</span>
-                        <span style={{ fontSize: '0.7rem', color: 'var(--text-light)' }}>{isOpen ? '▲' : '▼'}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {onShuffle && (
+                                <button
+                                    className="shuffle-btn"
+                                    onClick={(e) => { e.stopPropagation(); onShuffle(); }}
+                                    title="Shuffle by usage"
+                                >
+                                    <Icons.Shuffle />
+                                </button>
+                            )}
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-light)' }}>{isOpen ? '▲' : '▼'}</span>
+                        </div>
                     </div>
                     {isOpen && (
                         <div className="select-options">
